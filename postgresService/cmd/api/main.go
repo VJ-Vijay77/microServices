@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"os"
 
@@ -10,14 +11,19 @@ import (
 	"postgres/models"
 )
 
+
+
 type Config struct{}
+
 var PORT = ":8082"
+
 func main() {
+	fmt.Println(os.Getenv("POSTGRES_URI"))
 	app := Config{}
-	db,err := sqlx.Connect("postgres",os.Getenv("POSTGRES_URI"))
+	db, err := sqlx.Connect("postgres", os.Getenv("POSTGRES_URI"))
 	if err != nil {
 		log.Fatal(err)
-	}else{
+	} else {
 		log.Println("Connection to Postgres success....")
 	}
 
@@ -25,6 +31,7 @@ func main() {
 
 	r := gin.Default()
 	app.Routes(r)
+	log.Println("Starting Postgres Server on ", PORT)
 	r.Run(PORT)
 
 }

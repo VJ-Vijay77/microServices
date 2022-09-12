@@ -1,18 +1,26 @@
 FRONT_END_BINARY=frontEnd
+POSTGRES_BINARY=PostgresB
+MONGO_BINARY=MongoB
 
-up:
+up:buildFrontEnd buildPostgres buildMongo
 	@echo "Starting MongoDb Server"
 	docker compose down
 	docker compose up -d
-	@echo "Mongo Server Started...."
+	@echo "Services Started...."
 
 down:	
-	@echo "Mongo Server Stopping...."
+	@echo "Services Stopping...."
 	docker compose down
-	@echo "Mongo Server Stopped!!!"
+	@echo "Services Stopped!!!"
 
 buildFrontEnd:
 	cd ../frontEndService && env GOOS=linux CGO_ENABLED=0 go build -o ${FRONT_END_BINARY} ./cmd/api
+buildPostgres:
+	cd ../postgresService && env GOOS=linux CGO_ENABLED=0 go build -o ${POSTGRES_BINARY} ./cmd/api
+buildMongo:
+	cd ../mongoService && env GOOS=linux CGO_ENABLED=0 go build -o ${MONGO_BINARY} ./cmd/api
+
+
 
 start: buildFrontEnd
 	@echo "Starting front end"

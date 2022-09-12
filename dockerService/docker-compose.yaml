@@ -2,6 +2,17 @@ version: '3.8'
 
 services:
 
+  frontend:
+    build: 
+      context: ./../frontEndService
+      dockerfile: ./../frontEndService/front.dockerfile
+    restart: always
+    ports:
+      - "8080:8080"
+    deploy:
+      mode: replicated
+      replicas: 1
+
   mongoserver:
     build: 
       context: ./../mongoService
@@ -25,7 +36,8 @@ services:
     ports:
       - "8082:8082"
     environment:
-      POSTGRES_URI: "host=postgres port=5432 user=vijay password=12345 dbname=users sslmode=disable timezone=UTC connection_timeout=10"
+      POSTGRES_URI: "postgresql://vijay:12345@postgres:5432/users?sslmode=disable"
+      # POSTGRES_URI: "host=postgres port=5432 user=vijay password=12345 dbname=users sslmode=disable timezone=UTC connection_timeout=10"
     depends_on:
       - postgres
 
@@ -56,5 +68,5 @@ services:
       POSTGRES_PASSWORD: 12345
       POSTGRES_DB: users
     volumes:
-      - ./db-data/postgres/:/var/lib/postgresql/data  
+      - ./db-data/postgres/:/var/lib/postgresql  
 
