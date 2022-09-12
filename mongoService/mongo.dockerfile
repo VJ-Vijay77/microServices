@@ -5,8 +5,11 @@ RUN mkdir /app
 WORKDIR /app
 
 COPY . /app/
+COPY go.mod .
+COPY go.sum .
+RUN go mod download
 
-RUN env GOOS=linux CGO_ENABLED=0 go build -o mongoBinary ./cmd/api/main.go
+RUN env GOOS=linux CGO_ENABLED=0 go build -o mongoBinary ./cmd/api/
 
 FROM alpine:3
 

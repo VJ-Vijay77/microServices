@@ -1,15 +1,11 @@
 package main
 
 import (
-	"net/http"
-
 	"github.com/gin-gonic/gin"
 )
 
+func(app *Config)  Routess(r *gin.Engine) {
 
-func(app *Config) Routes() http.Handler {
-	r := gin.Default()
+	r.GET("/mongo", app.Mongo)
 
-	r.GET("/mongo",app.Mongo)
-	return r
 }

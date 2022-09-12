@@ -4,10 +4,10 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"net/http"
 	"os"
 	"time"
 
+	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -15,17 +15,21 @@ import (
 )
 
 // var MONGO_URI = "mongodb://localhost:27017"
-// var MONGO_URI = "mongodb://mongodb:27017"
+//  var MONGO_URI = "mongodb://mongodb:27017"
 var PORT = ":8081"
-type Config struct{}
+
+type Config struct{
+	
+}
+
 func main() {
-	app := Config{}
+	app  := Config {}
 	client, err := mongo.NewClient(options.Client().ApplyURI(os.Getenv("MONGO_URI")))
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	ctx,cancel := context.WithTimeout(context.Background(), 15*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 	defer cancel()
 	err = client.Connect(ctx)
 	if err != nil {
@@ -36,6 +40,8 @@ func main() {
 	err = client.Ping(ctx, readpref.Primary())
 	if err != nil {
 		log.Fatal(err)
+	} else {
+		fmt.Println("Connection to Mongo Successful...")
 	}
 
 	database, err := client.ListDatabaseNames(ctx, bson.M{})
@@ -43,15 +49,13 @@ func main() {
 		log.Fatal(err)
 	}
 
-	fmt.Println(database)
+	_ = database
 
-	srv := &http.Server{
-		Addr: PORT,
-		Handler: app.Routes(),
-	}
-
-	log.Println("Starting MongoDB Service on Port ",PORT)
-	err = srv.ListenAndServe()
+	r := gin.Default()
+	app.Routess(r)
+	log.Println("Starting MongoDB Service on Port ", PORT)
+	
+	err = r.Run(PORT)
 	if err != nil {
 		log.Panic(err)
 	}
