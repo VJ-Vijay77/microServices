@@ -10,7 +10,7 @@ type Config struct {
 }
 
 func main() {
-	var app *Config
+	app := Config{}
 	r := gin.Default()
 	app.Routes(r)
 	r.Run(PORT)
