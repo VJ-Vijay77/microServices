@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"net/http"
 	"os"
 	"time"
 
@@ -15,8 +16,10 @@ import (
 
 // var MONGO_URI = "mongodb://localhost:27017"
 // var MONGO_URI = "mongodb://mongodb:27017"
-
+var PORT = ":8081"
+type Config struct{}
 func main() {
+	app := Config{}
 	client, err := mongo.NewClient(options.Client().ApplyURI(os.Getenv("MONGO_URI")))
 	if err != nil {
 		log.Fatal(err)
@@ -41,5 +44,15 @@ func main() {
 	}
 
 	fmt.Println(database)
-	fmt.Println(os.Getenv("TEST_T"))
+
+	srv := &http.Server{
+		Addr: PORT,
+		Handler: app.Routes(),
+	}
+
+	log.Println("Starting MongoDB Service on Port ",PORT)
+	err = srv.ListenAndServe()
+	if err != nil {
+		log.Panic(err)
+	}
 }
