@@ -25,9 +25,11 @@ services:
     ports:
       - "8082:8082"
     environment:
-      POSTGRES_URI: "postgresql://vijay:12345@postgres:5432/users?sslmode=disable"
+      POSTGRES_URI: "host=postgres port=5432 user=vijay password=12345 dbname=users sslmode=disable timezone=UTC connection_timeout=10"
     depends_on:
       - postgres
+
+
   mongodb:
     image: mongo
     container_name: mongodb
