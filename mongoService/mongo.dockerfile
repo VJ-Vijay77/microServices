@@ -4,7 +4,7 @@ RUN mkdir /app
 
 WORKDIR /app
 
-# COPY . /app/
+COPY . /app/
 
 RUN env GOOS=linux CGO_ENABLED=0 go build -o mongoBinary ./cmd/api/main.go
 

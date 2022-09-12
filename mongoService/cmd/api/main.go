@@ -13,10 +13,11 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/readpref"
 )
 
-var MONGO_URI = "mongodb://localhost:27017"
+// var MONGO_URI = "mongodb://localhost:27017"
+// var MONGO_URI = "mongodb://mongodb:27017"
 
 func main() {
-	client, err := mongo.NewClient(options.Client().ApplyURI(MONGO_URI))
+	client, err := mongo.NewClient(options.Client().ApplyURI(os.Getenv("MONGO_URI")))
 	if err != nil {
 		log.Fatal(err)
 	}

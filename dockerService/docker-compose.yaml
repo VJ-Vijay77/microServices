@@ -10,7 +10,7 @@ services:
     ports:
       - "8081:8081"
     environment:
-      TEST_T: "Testing env"
+      MONGO_URI: "mongodb://mongodb:27017"
     depends_on:
       - mongodb
 
