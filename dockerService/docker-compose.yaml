@@ -2,6 +2,19 @@ version: '3.8'
 
 services:
 
+  mongoserver:
+    build: 
+      context: ./../mongoService
+      dockerfile: ./../mongoService/mongo.dockerfile
+    restart: always
+    ports:
+      - "8081:8081"
+    environment:
+      TEST_T: "Testing env"
+    depends_on:
+      - mongodb
+
+
   mongodb:
     image: mongo
     container_name: mongodb
