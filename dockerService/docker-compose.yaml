@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+
+  mongodb:
+    image: mongo
+    container_name: mongodb
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=vijay
+      - MONGO_INITDB_ROOT_PASSWORD=12345
+    ports:
+      - "27017:27014"
+    restart: always
+    # volumes:
+    #   - './mongo:/data/db'  
+      
