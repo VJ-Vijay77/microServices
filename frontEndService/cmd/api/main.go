@@ -2,12 +2,11 @@ package main
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/jmoiron/sqlx"
 )
+
 var PORT = ":8080"
 
 type Config struct {
-	Db *sqlx.DB
 }
 
 func main() {
