@@ -17,6 +17,8 @@ buildFrontEnd:
 	cd ../frontEndService && env GOOS=linux CGO_ENABLED=0 go build -o ${FRONT_END_BINARY} ./cmd/api
 buildPostgres:
 	cd ../postgresService && env GOOS=linux CGO_ENABLED=0 go build -o ${POSTGRES_BINARY} ./cmd/api
+runPostgres:
+	cd ../postgresService && ./${POSTGRES_BINARY}
 buildMongo:
 	cd ../mongoService && env GOOS=linux CGO_ENABLED=0 go build -o ${MONGO_BINARY} ./cmd/api
 
