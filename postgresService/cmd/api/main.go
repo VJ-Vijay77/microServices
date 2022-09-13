@@ -22,12 +22,7 @@ var PORT = ":8082"
 func main() {
 	fmt.Println(os.Getenv("POSTGRES_URI"))
 	app := &Config{}
-	// db, err := sqlx.Connect("postgres", os.Getenv("POSTGRES_URI"))
-	// if err != nil {
-	// 	log.Fatal(err)
-	// } else {
-	// 	log.Println("Connection to Postgres success....")
-	// }
+	
 	app = ConnectPostgres()		
 	
 	app.Db.Exec(models.Schema)
