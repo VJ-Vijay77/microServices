@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
@@ -26,7 +27,7 @@ func (app *Config) Manage(c *gin.Context) {
 
 	switch request.Db {
 	case "postgres":
-		c.JSON(200, "ok")
+		app.ToPostgres(c,request)
 	case "mongo":
 		c.JSON(200, "Under working")
 	default:
@@ -34,6 +35,13 @@ func (app *Config) Manage(c *gin.Context) {
 	}
 }
 
-func (app *Config) ToPostgres(data Message) {
+func (app *Config) ToPostgres(c *gin.Context ,data Message) {
+	 PostgresURL := "http://postgreserver/get/"+data.Name
 
+	 request,err := http.NewRequest("GET",PostgresURL)
+	 if err != nil {
+		log.Println(err)
+		
+		
+	 }
 }
