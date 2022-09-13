@@ -7,5 +7,7 @@ import (
 func(app *Config)  Routess(r *gin.Engine) {
 
 	r.GET("/mongo", app.Mongo)
-
+	r.POST("/insert",app.Insert)
 }
+
+

@@ -4,7 +4,6 @@ MONGO_BINARY=MongoB
 
 up:buildFrontEnd buildPostgres buildMongo
 	@echo "Starting  Services"
-	docker compose down
 	docker compose up -d
 	@echo "Services Started...."
 

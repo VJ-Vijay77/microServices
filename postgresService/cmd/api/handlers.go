@@ -13,12 +13,12 @@ func(app *Config) Postgres(c *gin.Context) {
 
 func(app *Config) Insert(c *gin.Context) {
 	var users models.Users
-	c.JSON(200,"1")
+	
 	if err := c.ShouldBindJSON(&users); err != nil{
 		c.JSON(400,"Could not get data frpm struct")
 		return
 	}
-	c.JSON(200,"2")
+	
 
 	_,err := app.Db.Exec("INSERT INTO users(name,email,password,age)VALUES($1,$2,$3,$4)",users.Name,users.Email,users.Password,users.Age)
 	if err != nil {
