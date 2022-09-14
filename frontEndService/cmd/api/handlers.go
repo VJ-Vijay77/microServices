@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"log"
 	"net/http"
 
@@ -50,6 +51,46 @@ func (app *Config) ToPostgres(c *gin.Context ,data PostgresLoad) {
 	URLstring := "http://postgreserver/get"
 	request,err := http.NewRequest("POST",URLstring,bytes.NewBuffer(jsonData))
 	if err != nil {
-		
+		app.errorJSON(c.Writer,err)
 	}
+
+	client := &http.Client{}
+	response,err := client.Do(request)
+	if err != nil {
+		app.errorJSON(c.Writer,err)
+	}
+
+	defer response.Body.Close()
+
+
+	if response.StatusCode == http.StatusUnauthorized {
+		app.errorJSON(c.Writer,err)
+		return
+	}else if response.StatusCode != http.StatusAccepted {
+		app.errorJSON(c.Writer,errors.New("error calling postgres server"))
+		return
+	}
+
+
+	var jsonFromService jsonResponse
+	err = json.NewDecoder(response.Body).Decode(&jsonFromService)
+	if err != nil{
+	app.errorJSON(c.Writer,err)
+		return
+	}
+
+	if jsonFromService.Error{
+		app.errorJSON(c.Writer,err)
+		return
+	}
+
+	var payload jsonResponse
+	payload.Error =false
+	payload.Message = "Success"
+	payload.Data = jsonFromService.Data
+
+	
+
+
+
 }
