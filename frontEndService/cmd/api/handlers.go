@@ -1,12 +1,16 @@
 package main
 
 import (
+	"encoding/json"
 	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
 
+type Response struct{
+	Msg string	`json:"msg"`
+}
 type Message struct {
 	Name string `json:"name"`
 	Db   string `json:"db"`
@@ -36,12 +40,44 @@ func (app *Config) Manage(c *gin.Context) {
 }
 
 func (app *Config) ToPostgres(c *gin.Context ,data Message) {
-	 PostgresURL := "http://postgreserver/get/"+data.Name
+	 PostgresURL := "http://172.24.0.4:8080/get/"+data.Name
 
-	 request,err := http.NewRequest("GET",PostgresURL)
+	 request,err := http.NewRequest("GET",PostgresURL,nil)
 	 if err != nil {
 		log.Println(err)
-		
-		
+		c.JSON(500,"error in new request")
+		return
+	}
+	request.Header.Set("Content-Type","application/json")
+
+	 client := &http.Client{}
+	 response,err := client.Do(request)
+	 if err != nil {
+		log.Println(err)
+		c.JSON(500,"error in Do request")
+		return
 	 }
+
+	 if response.StatusCode == 404 {
+		log.Println("Couldnt Find data")
+		return
+	 }
+	 if response.StatusCode != 200 {
+		log.Println("Some mistake")
+		return
+	 }
+
+	 var res Response
+	 err = json.NewDecoder(response.Body).Decode(&res)
+	 if err != nil{
+		log.Println(err)
+		c.JSON(400,"error in decode")
+		return
+	}
+
+	c.JSON(200,gin.H{
+		"msg":res,
+	})
+	 
+
 }
