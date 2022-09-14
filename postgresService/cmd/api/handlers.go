@@ -36,16 +36,32 @@ func (app *Config) GetOne(c *gin.Context) {
 	Name := c.Param("name")
 
 	users := models.Users{}
+	w := c.Writer
 
 	err := app.Db.Get(&users, "SELECT * FROM users WHERE name=$1", Name)
 	if err != nil {
 		log.Println(err)
+		w.Header().Set("Content-Type","application/json")
+		w.WriteHeader(404)
 		c.JSON(404, "Couldnt find data")
 		return
 	}
+	w.Header().Set("Content-Type","application/json")
+	w.WriteHeader(200)
+	_,err = w.Write([]byte(users.Email))
+	if err != nil{
+		log.Println(err)
+		return
+	}
+
 	c.JSON(200, gin.H{
 		"name":  users.Name,
 		"email": users.Email,
 		"age":   users.Age,
 	})
+}
+
+
+func(app *Config)GetOnePost(c *gin.Context) {
+	
 }
