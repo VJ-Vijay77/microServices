@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"encoding/json"
 	"log"
 	"net/http"
@@ -11,8 +12,11 @@ import (
 type Response struct{
 	Msg string	`json:"msg"`
 }
-type Message struct {
+type PostgresLoad struct{
 	Name string `json:"name"`
+}
+type Message struct {
+	Data PostgresLoad `json:"postgres"`
 	Db   string `json:"db"`
 }
 
@@ -31,7 +35,7 @@ func (app *Config) Manage(c *gin.Context) {
 
 	switch request.Db {
 	case "postgres":
-		app.ToPostgres(c,request)
+		app.ToPostgres(c,request.Data)
 	case "mongo":
 		c.JSON(200, "Under working")
 	default:
@@ -39,45 +43,13 @@ func (app *Config) Manage(c *gin.Context) {
 	}
 }
 
-func (app *Config) ToPostgres(c *gin.Context ,data Message) {
-	 PostgresURL := "http://172.24.0.4:8080/get/"+data.Name
-
-	 request,err := http.NewRequest("GET",PostgresURL,nil)
-	 if err != nil {
-		log.Println(err)
-		c.JSON(500,"error in new request")
-		return
-	}
-	request.Header.Set("Content-Type","application/json")
-
-	 client := &http.Client{}
-	 response,err := client.Do(request)
-	 if err != nil {
-		log.Println(err)
-		c.JSON(500,"error in Do request")
-		return
-	 }
-
-	 if response.StatusCode == 404 {
-		log.Println("Couldnt Find data")
-		return
-	 }
-	 if response.StatusCode != 200 {
-		log.Println("Some mistake")
-		return
-	 }
-
-	 var res Response
-	 err = json.NewDecoder(response.Body).Decode(&res)
-	 if err != nil{
-		log.Println(err)
-		c.JSON(400,"error in decode")
-		return
-	}
-
-	c.JSON(200,gin.H{
-		"msg":res,
-	})
+func (app *Config) ToPostgres(c *gin.Context ,data PostgresLoad) {
 	 
-
+	jsonData,_ := json.MarshalIndent(data,"","\t")
+	
+	URLstring := "http://postgreserver/get"
+	request,err := http.NewRequest("POST",URLstring,bytes.NewBuffer(jsonData))
+	if err != nil {
+		
+	}
 }

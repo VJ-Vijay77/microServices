@@ -60,3 +60,8 @@ func (app *Config) GetOne(c *gin.Context) {
 		"age":   users.Age,
 	})
 }
+
+
+func(app *Config)GetOnePost(c *gin.Context) {
+	
+}
